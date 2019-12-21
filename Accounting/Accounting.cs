@@ -16,28 +16,25 @@ namespace AccountingTest
         {
             if (IsSameYearAndMonth(startDate, endDate))
             {
-                var diffDays = GetDiffDays(startDate, endDate);
-                return diffDays * BudgetPerDayOfThisMonth(endDate);
+                return GetDiffDays(startDate, endDate) * BudgetPerDayOfThisMonth(endDate);
             }
-            else
-            {
-                var sum = 0;
-                for (DateTime currentDateTime = startDate; currentDateTime.Month <= endDate.Month; currentDateTime = currentDateTime.AddMonths(1))
-                {
-                    if (IsFullMonth(endDate, currentDateTime))
-                    {
-                        sum += GetDiffDays(new DateTime(currentDateTime.Year, currentDateTime.Month, 1), currentDateTime.AddMonths(1).AddDays(-1))
-                               * BudgetPerDayOfThisMonth(currentDateTime);
-                    }
-                    else
-                    {
-                        sum += GetDiffDays(startDate, endDate)
-                               * BudgetPerDayOfThisMonth(endDate);
-                    }
-                }
 
-                return sum;
+            var sum = 0;
+            for (DateTime currentDateTime = startDate; currentDateTime.Month <= endDate.Month; currentDateTime = currentDateTime.AddMonths(1))
+            {
+                if (IsFullMonth(endDate, currentDateTime))
+                {
+                    sum += GetDiffDays(new DateTime(currentDateTime.Year, currentDateTime.Month, 1), currentDateTime.AddMonths(1).AddDays(-1))
+                           * BudgetPerDayOfThisMonth(currentDateTime);
+                }
+                else
+                {
+                    sum += GetDiffDays(startDate, endDate)
+                           * BudgetPerDayOfThisMonth(endDate);
+                }
             }
+
+            return sum;
         }
 
         private int GetDiffDays(DateTime startDate, DateTime endDate)
