@@ -8,6 +8,8 @@ namespace AccountingTest
     {
         private List<Budget> _budgets;
         private Accounting _accounting;
+        private DateTime _startDate;
+        private DateTime _endDate;
 
         private void GivenBudgets()
         {
@@ -24,6 +26,11 @@ namespace AccountingTest
             _accounting = new Accounting(budgetRepository);
         }
 
+        private void BudgetShouldBe(int expected)
+        {
+            Assert.AreEqual(expected, _accounting.QueryBudget(_startDate, _endDate));
+        }
+
         [SetUp]
         public void Setup()
         {
@@ -34,26 +41,26 @@ namespace AccountingTest
         [Test]
         public void Get_Single_Month_Budget()
         {
-            var startDate = new DateTime(2019, 1, 1);
-            var endDate = new DateTime(2019, 1, 31);
+            _startDate = new DateTime(2019, 1, 1);
+            _endDate = new DateTime(2019, 1, 31);
 
-            Assert.AreEqual(31, _accounting.QueryBudget(startDate, endDate));
+            BudgetShouldBe(31);
         }
 
         [Test]
         public void Get_Two_Month_Budget()
         {
-            var startDate = new DateTime(2019, 1, 1);
-            var endDate = new DateTime(2019, 2, 28);
-            Assert.AreEqual(311, _accounting.QueryBudget(startDate, endDate));
+            _startDate = new DateTime(2019, 1, 1);
+            _endDate = new DateTime(2019, 2, 28);
+            BudgetShouldBe(311);
         }
 
         [Test]
         public void Get_Partial_Month_Budget()
         {
-            var startDate = new DateTime(2019, 1, 15);
-            var endDate = new DateTime(2019, 1, 30);
-            Assert.AreEqual(16, _accounting.QueryBudget(startDate, endDate));
+            _startDate = new DateTime(2019, 1, 15);
+            _endDate = new DateTime(2019, 1, 30);
+            BudgetShouldBe(16);
         }
     }
 }
