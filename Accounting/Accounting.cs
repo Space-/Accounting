@@ -26,13 +26,13 @@ namespace AccountingTest
                 {
                     if (IsFullMonth(endDate, currentDateTime))
                     {
-                        var diffDays = GetTotalDaysOfThisMonth(new DateTime(currentDateTime.Year, currentDateTime.Month, 1)) * BudgetPerDayOfThisMonth(currentDateTime);
-                        sum += diffDays * BudgetPerDayOfThisMonth(currentDateTime);
+                        sum += GetDiffDays(new DateTime(currentDateTime.Year, currentDateTime.Month, 1), currentDateTime.AddMonths(1).AddDays(-1))
+                               * BudgetPerDayOfThisMonth(currentDateTime);
                     }
                     else
                     {
-                        var diffDays = GetDiffDays(startDate, endDate);
-                        sum += diffDays * BudgetPerDayOfThisMonth(currentDateTime);
+                        sum += GetDiffDays(startDate, endDate)
+                               * BudgetPerDayOfThisMonth(endDate);
                     }
                 }
 
@@ -53,16 +53,15 @@ namespace AccountingTest
         private int BudgetPerDayOfThisMonth(DateTime currentDateTime)
         {
             var currentYearMonth = string.Concat(currentDateTime.Year, currentDateTime.Month.ToString().PadLeft(2, '0')); // 201901
-            var currentMonthTotalBudget = _budgetRepository.GetAll().First(x => x.YearMonth == currentYearMonth); // $31
-            var totalDaysOfThisMonth = GetTotalDaysOfThisMonth(currentDateTime);
+            var currentMonthTotalBudget = _budgetRepository.GetAll().First(x => x.YearMonth == currentYearMonth);
 
-            var budgetPerDayOfThisMonth = currentMonthTotalBudget.Amount / totalDaysOfThisMonth;
+            var budgetPerDayOfThisMonth = currentMonthTotalBudget.Amount / GetTotalDaysOfThisMonth(currentDateTime);
             return budgetPerDayOfThisMonth;
         }
 
-        private int GetTotalDaysOfThisMonth(DateTime date)
+        private int GetTotalDaysOfThisMonth(DateTime currentDateTime)
         {
-            return new DateTime(date.Year, date.Month, 1).AddMonths(1).AddDays(-1).Day;
+            return DateTime.DaysInMonth(currentDateTime.Year, currentDateTime.Month);
         }
 
         private bool IsSameYearAndMonth(DateTime startDate, DateTime endDate)
