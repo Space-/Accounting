@@ -26,7 +26,8 @@ namespace AccountingTest
                 {
                     if (IsFullMonth(endDate, currentDateTime))
                     {
-                        sum += GetTotalDaysOfThisMonth(new DateTime(currentDateTime.Year, currentDateTime.Month, 1)) * BudgetPerDayOfThisMonth(currentDateTime);
+                        var diffDays = GetTotalDaysOfThisMonth(new DateTime(currentDateTime.Year, currentDateTime.Month, 1)) * BudgetPerDayOfThisMonth(currentDateTime);
+                        sum += diffDays * BudgetPerDayOfThisMonth(currentDateTime);
                     }
                     else
                     {
