@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Tests
+namespace AccountingTest
 {
     public class BudgetRepository
     {
