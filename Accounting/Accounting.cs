@@ -17,9 +17,8 @@ namespace Tests
         {
             if (IsSameYearAndMonth(startDate, endDate))
             {
-                // 1/15 ~ 1/31
-                var diffDays = GetDiffDays(startDate, endDate); // 16 days
-                return diffDays * BudgetPerDayOfThisMonth(endDate); // 16 * ($31 / 31day)
+                var diffDays = GetDiffDays(startDate, endDate);
+                return diffDays * BudgetPerDayOfThisMonth(endDate);
             }
             else
             {
@@ -32,8 +31,8 @@ namespace Tests
                     }
                     else
                     {
-                        var diffDays = GetDiffDays(startDate, endDate); // 16 days
-                        sum += diffDays * BudgetPerDayOfThisMonth(currentDateTime); // 16 * ($31 / 31day)
+                        var diffDays = GetDiffDays(startDate, endDate);
+                        sum += diffDays * BudgetPerDayOfThisMonth(currentDateTime);
                     }
                 }
 
