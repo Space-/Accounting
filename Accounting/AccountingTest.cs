@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace AccountingTest
 {
-    public class Tests
+    public class AccountingTest
     {
         private List<Budget> _budgets;
         private Accounting _accounting;
