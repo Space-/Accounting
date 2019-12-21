@@ -14,11 +14,6 @@ namespace AccountingTest
 
         public decimal QueryBudget(DateTime startDate, DateTime endDate)
         {
-            if (IsSameYearAndMonth(startDate, endDate))
-            {
-                return GetTotalBudgetInThisPeriod(startDate, endDate);
-            }
-
             var sum = 0;
             for (DateTime currentDateTime = startDate; currentDateTime.Month <= endDate.Month; currentDateTime = currentDateTime.AddMonths(1))
             {
