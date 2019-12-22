@@ -19,20 +19,39 @@ namespace AccountingTest
             {
                 totalBudget += IsFullMonth(endDate, currentDateTime)
                     ? GetTotalBudgetInThisPeriod(new DateTime(currentDateTime.Year, currentDateTime.Month, 1), currentDateTime.AddMonths(1).AddDays(-1))
-                    : GetTotalBudgetInThisPeriod(startDate, endDate);
+                    : GetTotalBudgetInThisPeriod(currentDateTime, endDate);
             }
 
             return totalBudget;
         }
 
+        private static bool IsEndDateEqualOrGreaterThanCurrentDate(DateTime endDate, DateTime currentDateTime)
+        {
+            return DateTime.Compare(endDate, currentDateTime) > 0;
+        }
+
+        // Should modify this method to pass test case
         private int GetTotalBudgetInThisPeriod(DateTime startDate, DateTime endDate)
         {
-            return GetDiffDays(startDate, endDate) * BudgetPerDayOfThisMonth(endDate);
+            if (IsSameYearAndMonth(startDate, endDate))
+            {
+                return GetDiffDays(startDate, endDate) * BudgetPerDayOfThisMonth(endDate);
+            }
+            else
+            {
+                return GetDiffDays(startDate, new DateTime(startDate.Year, startDate.Month, 1).AddDays(-1)) *
+                       BudgetPerDayOfThisMonth(startDate) + endDate.Date.Day * BudgetPerDayOfThisMonth(endDate);
+            }
         }
 
         private int GetDiffDays(DateTime startDate, DateTime endDate)
         {
-            return endDate.Date.Day - startDate.Date.Day + 1;
+            if (IsSameYearAndMonth(startDate, endDate))
+            {
+                return new TimeSpan(endDate.Ticks - startDate.Ticks).Days + 1;
+            }
+
+            return new TimeSpan(endDate.Ticks - startDate.Ticks).Days + 1;
         }
 
         private bool IsFullMonth(DateTime endDate, DateTime currentDateTime)

@@ -16,8 +16,11 @@ namespace AccountingTest
             var janBudget = new Budget() { YearMonth = "201901", Amount = 31 };
             var febBudget = new Budget() { YearMonth = "201902", Amount = 280 };
             var marBudget = new Budget() { YearMonth = "201903", Amount = 3100 };
+            var decBudget = new Budget() { YearMonth = "201912", Amount = 31000 };
 
-            _budgets = new List<Budget> { janBudget, febBudget, marBudget };
+            var janBudget2020 = new Budget() { YearMonth = "202001", Amount = 62 };
+
+            _budgets = new List<Budget> { janBudget, febBudget, marBudget, decBudget, janBudget2020 };
         }
 
         private void CreateAccounting()
@@ -61,6 +64,15 @@ namespace AccountingTest
             _startDate = new DateTime(2019, 1, 15);
             _endDate = new DateTime(2019, 1, 30);
             BudgetShouldBe(16);
+        }
+
+        [Test]
+        public void Get_Cross_Year_Budget()
+        {
+            _startDate = new DateTime(2019, 12, 29);
+            _endDate = new DateTime(2020, 1, 1);
+            BudgetShouldBe(3002);
+            // $1000 * 3days + $2 * 1days = 3002
         }
     }
 }
