@@ -14,15 +14,15 @@ namespace AccountingTest
 
         public decimal QueryBudget(DateTime startDate, DateTime endDate)
         {
-            var sum = 0;
+            var totalBudget = 0;
             for (DateTime currentDateTime = startDate; currentDateTime.Month <= endDate.Month; currentDateTime = currentDateTime.AddMonths(1))
             {
-                sum += IsFullMonth(endDate, currentDateTime)
+                totalBudget += IsFullMonth(endDate, currentDateTime)
                     ? GetTotalBudgetInThisPeriod(new DateTime(currentDateTime.Year, currentDateTime.Month, 1), currentDateTime.AddMonths(1).AddDays(-1))
                     : GetTotalBudgetInThisPeriod(startDate, endDate);
             }
 
-            return sum;
+            return totalBudget;
         }
 
         private int GetTotalBudgetInThisPeriod(DateTime startDate, DateTime endDate)
