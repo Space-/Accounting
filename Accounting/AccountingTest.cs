@@ -42,46 +42,45 @@ namespace AccountingTest
         }
 
         [Test]
-        public void ()
+        public void Get_Single_Day_Budget()
         {
-            _startDate = private new DateTime(2019, 1, 1);
+            _startDate = new DateTime(2019, 1, 1);
+            _endDate = new DateTime(2019, 1, 1);
 
-        _endDate = private new DateTime(2019, 1, 1);
+            BudgetShouldBe(1);
+        }
 
-        private BudgetShouldBe(1);
+        [Test]
+        public void Get_Single_Month_Budget()
+        {
+            _startDate = new DateTime(2019, 1, 1);
+            _endDate = new DateTime(2019, 1, 31);
+
+            BudgetShouldBe(31);
+        }
+
+        [Test]
+        public void Get_Two_Month_Budget()
+        {
+            _startDate = new DateTime(2019, 1, 1);
+            _endDate = new DateTime(2019, 2, 28);
+            BudgetShouldBe(311);
+        }
+
+        [Test]
+        public void Get_Partial_Month_Budget()
+        {
+            _startDate = new DateTime(2019, 1, 15);
+            _endDate = new DateTime(2019, 1, 30);
+            BudgetShouldBe(16);
+        }
+
+        [Test]
+        public void Get_Cross_Year_Budget()
+        {
+            _startDate = new DateTime(2019, 12, 29);
+            _endDate = new DateTime(2020, 1, 1);
+            BudgetShouldBe(3002); // $1000 * 3days + $2 * 1days = 3002
+        }
     }
-
-    [Test]
-    public void Get_Single_Month_Budget()
-    {
-        _startDate = new DateTime(2019, 1, 1);
-        _endDate = new DateTime(2019, 1, 31);
-
-        BudgetShouldBe(31);
-    }
-
-    [Test]
-    public void Get_Two_Month_Budget()
-    {
-        _startDate = new DateTime(2019, 1, 1);
-        _endDate = new DateTime(2019, 2, 28);
-        BudgetShouldBe(311);
-    }
-
-    [Test]
-    public void Get_Partial_Month_Budget()
-    {
-        _startDate = new DateTime(2019, 1, 15);
-        _endDate = new DateTime(2019, 1, 30);
-        BudgetShouldBe(16);
-    }
-
-    [Test]
-    public void Get_Cross_Year_Budget()
-    {
-        _startDate = new DateTime(2019, 12, 29);
-        _endDate = new DateTime(2020, 1, 1);
-        BudgetShouldBe(3002); // $1000 * 3days + $2 * 1days = 3002
-    }
-}
 }
