@@ -32,21 +32,25 @@ namespace AccountingTest
 
         private int GetTotalBudgetInThisPeriod(DateTime startDate, DateTime endDate)
         {
+            DateTime lastDate = IsSameYearAndMonth(startDate, endDate) ? endDate : GetLastDateOfThisMonth(startDate);
+            //            var lastDate = GetLastDateOfThisMonth(endDate);
+
             if (startDate.Year == endDate.Year)
             {
                 if (startDate.Month == endDate.Month)
                 {
-                    return GetDiffDays(startDate, endDate) * BudgetPerDayOfThisMonth(endDate);
+                    return GetDiffDays(startDate, lastDate) * BudgetPerDayOfThisMonth(endDate)
+                        + 0 * BudgetPerDayOfThisMonth(endDate);
                 }
                 else
                 {
-                    return GetDiffDays(startDate, GetLastDateOfThisMonth(startDate)) * BudgetPerDayOfThisMonth(startDate)
+                    return GetDiffDays(startDate, lastDate) * BudgetPerDayOfThisMonth(startDate)
                            + endDate.Day * BudgetPerDayOfThisMonth(endDate);
                 }
             }
             else
             {
-                return GetDiffDays(startDate, GetLastDateOfThisMonth(startDate)) * BudgetPerDayOfThisMonth(startDate)
+                return GetDiffDays(startDate, lastDate) * BudgetPerDayOfThisMonth(startDate)
                        + endDate.Day * BudgetPerDayOfThisMonth(endDate);
             }
         }
@@ -69,10 +73,20 @@ namespace AccountingTest
         private int BudgetPerDayOfThisMonth(DateTime currentDateTime)
         {
             var currentYearMonth = currentDateTime.ToString("yyyyMM"); // 201901
-            var currentMonthTotalBudget = _budgetRepository.GetAll().First(x => x.YearMonth == currentYearMonth);
+            var currentMonthTotalBudget = _budgetRepository.GetAll().FirstOrDefault(x => x.YearMonth == currentYearMonth);
+            if (currentMonthTotalBudget != null)
+            {
+                var budgetPerDayOfThisMonth = currentMonthTotalBudget.Amount / GetTotalDaysOfThisMonth(currentDateTime);
 
-            var budgetPerDayOfThisMonth = currentMonthTotalBudget.Amount / GetTotalDaysOfThisMonth(currentDateTime);
-            return budgetPerDayOfThisMonth;
+                return budgetPerDayOfThisMonth;
+            }
+
+            return 0;
+        }
+
+        private static bool DataNotExistInRepository(Budget currentMonthTotalBudget)
+        {
+            return currentMonthTotalBudget == null;
         }
 
         private int GetTotalDaysOfThisMonth(DateTime currentDateTime)

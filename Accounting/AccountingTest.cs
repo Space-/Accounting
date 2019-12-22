@@ -82,5 +82,31 @@ namespace AccountingTest
             _endDate = new DateTime(2020, 1, 1);
             BudgetShouldBe(3002); // $1000 * 3days + $2 * 1days = 3002
         }
+
+        [Test]
+        public void Get_Not_Exist_Budget_Data_In_Repository_Will_Return_Zero()
+        {
+            var janBudget = new Budget() { YearMonth = "201901", Amount = 31 };
+            var febBudget = new Budget() { YearMonth = "201902", Amount = 280 };
+            _budgets = new List<Budget> { janBudget, febBudget };
+
+            CreateAccounting();
+
+            var repositoryNotExistStartDate = new DateTime(2019, 4, 1);
+            var repositoryNotExistEndDate = new DateTime(2020, 4, 15);
+
+            _startDate = repositoryNotExistStartDate;
+            _endDate = repositoryNotExistEndDate;
+            BudgetShouldBe(0);
+        }
+
+        [Ignore("Test this case later")]
+        [Test]
+        public void Get_Wrong_Period_StartDate_Is_Less_Than_EndDate_Return_Budget_Is_Zero()
+        {
+            _startDate = new DateTime(2019, 1, 15);
+            _endDate = new DateTime(2020, 1, 1);
+            BudgetShouldBe(0);
+        }
     }
 }
