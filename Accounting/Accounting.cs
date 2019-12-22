@@ -15,7 +15,7 @@ namespace AccountingTest
         public decimal QueryBudget(DateTime startDate, DateTime endDate)
         {
             var totalBudget = 0;
-            for (DateTime currentDateTime = startDate; currentDateTime.Month <= endDate.Month; currentDateTime = currentDateTime.AddMonths(1))
+            for (DateTime currentDateTime = startDate; IsEndDateEqualOrGreaterThanCurrentDate(endDate, currentDateTime); currentDateTime = currentDateTime.AddMonths(1))
             {
                 totalBudget += IsFullMonth(endDate, currentDateTime)
                     ? GetTotalBudgetInThisPeriod(new DateTime(currentDateTime.Year, currentDateTime.Month, 1), currentDateTime.AddMonths(1).AddDays(-1))
@@ -27,28 +27,42 @@ namespace AccountingTest
 
         private static bool IsEndDateEqualOrGreaterThanCurrentDate(DateTime endDate, DateTime currentDateTime)
         {
-            return DateTime.Compare(endDate, currentDateTime) > 0;
+            return DateTime.Compare(endDate, currentDateTime) >= 0;
         }
 
         // Should modify this method to pass test case
         private int GetTotalBudgetInThisPeriod(DateTime startDate, DateTime endDate)
         {
-            if (IsSameYearAndMonth(startDate, endDate))
+            if (startDate.Year == endDate.Year)
             {
-                return GetDiffDays(startDate, endDate) * BudgetPerDayOfThisMonth(endDate);
+                if (startDate.Month == endDate.Month)
+                {
+                    return GetDiffDays(startDate, endDate) * BudgetPerDayOfThisMonth(endDate);
+                }
+                else
+                {
+                    return GetDiffDays(startDate, GetLastDateOfThisMonth(startDate))
+                           * BudgetPerDayOfThisMonth(startDate)
+                           + endDate.Date.Day * BudgetPerDayOfThisMonth(endDate);
+                }
             }
             else
             {
-                return GetDiffDays(startDate, new DateTime(startDate.Year, startDate.Month, 1).AddDays(-1)) *
-                       BudgetPerDayOfThisMonth(startDate) + endDate.Date.Day * BudgetPerDayOfThisMonth(endDate);
+                return GetDiffDays(startDate, GetLastDateOfThisMonth(startDate)) * BudgetPerDayOfThisMonth(startDate)
+                       + endDate.Day * BudgetPerDayOfThisMonth(endDate);
             }
+        }
+
+        private static DateTime GetLastDateOfThisMonth(DateTime startDate)
+        {
+            return new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1).AddDays(-1);
         }
 
         private int GetDiffDays(DateTime startDate, DateTime endDate)
         {
             if (IsSameYearAndMonth(startDate, endDate))
             {
-                return new TimeSpan(endDate.Ticks - startDate.Ticks).Days + 1;
+                GetTotalDaysOfThisMonth(startDate);
             }
 
             return new TimeSpan(endDate.Ticks - startDate.Ticks).Days + 1;
@@ -61,7 +75,8 @@ namespace AccountingTest
 
         private int BudgetPerDayOfThisMonth(DateTime currentDateTime)
         {
-            var currentYearMonth = string.Concat(currentDateTime.Year, currentDateTime.Month.ToString().PadLeft(2, '0')); // 201901
+            //            var currentYearMonth = string.Concat(currentDateTime.Year, currentDateTime.Month.ToString().PadLeft(2, '0')); // 201901
+            var currentYearMonth = currentDateTime.ToString("yyyyMM"); // 201901
             var currentMonthTotalBudget = _budgetRepository.GetAll().First(x => x.YearMonth == currentYearMonth);
 
             var budgetPerDayOfThisMonth = currentMonthTotalBudget.Amount / GetTotalDaysOfThisMonth(currentDateTime);

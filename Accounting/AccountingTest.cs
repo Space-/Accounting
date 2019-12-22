@@ -71,8 +71,7 @@ namespace AccountingTest
         {
             _startDate = new DateTime(2019, 12, 29);
             _endDate = new DateTime(2020, 1, 1);
-            BudgetShouldBe(3002);
-            // $1000 * 3days + $2 * 1days = 3002
+            BudgetShouldBe(3002); // $1000 * 3days + $2 * 1days = 3002
         }
     }
 }
