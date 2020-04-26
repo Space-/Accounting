@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace AccountingTest
@@ -10,6 +11,7 @@ namespace AccountingTest
         private Accounting _accounting;
         private DateTime _startDate;
         private DateTime _endDate;
+        private IBudgetRepository _budgetRepository;
 
         private void GivenBudgets()
         {
@@ -21,12 +23,13 @@ namespace AccountingTest
             var janBudget2020 = new Budget() { YearMonth = "202001", Amount = 62 };
 
             _budgets = new List<Budget> { janBudget, febBudget, marBudget, decBudget, janBudget2020 };
+            _budgetRepository = Substitute.For<IBudgetRepository>();
         }
 
         private void CreateAccounting()
         {
-            var budgetRepository = new BudgetRepository(_budgets);
-            _accounting = new Accounting(budgetRepository);
+            _budgetRepository.GetAll().Returns(_budgets);
+            _accounting = new Accounting(_budgetRepository);
         }
 
         private void BudgetShouldBe(int expected)

@@ -5,9 +5,9 @@ namespace AccountingTest
 {
     public class Accounting
     {
-        private readonly BudgetRepository _budgetRepository;
+        private readonly IBudgetRepository _budgetRepository;
 
-        public Accounting(BudgetRepository budgetRepository)
+        public Accounting(IBudgetRepository budgetRepository)
         {
             _budgetRepository = budgetRepository;
         }

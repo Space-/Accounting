@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace AccountingTest
 {
-    public class BudgetRepository
+    public class BudgetRepository : IBudgetRepository
     {
-        private List<Budget> _budgets;
+        private readonly List<Budget> _budgets;
 
         public BudgetRepository(List<Budget> budgets)
         {
@@ -13,7 +13,7 @@ namespace AccountingTest
 
         public List<Budget> GetAll()
         {
-            return this._budgets;
+            return _budgets;
         }
     }
 }
